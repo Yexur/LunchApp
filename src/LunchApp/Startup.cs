@@ -45,8 +45,8 @@ namespace LunchApp
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            var connection = @"Server=localhost\SQLEXPRESS;Database=LUNCH_APP;Integrated Security=True;MultipleActiveResultSets=True;";
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
