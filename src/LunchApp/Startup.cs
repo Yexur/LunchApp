@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using LunchApp.Data;
 using LunchApp.Models;
 using LunchApp.Services;
+using LunchApp.Persistance.Repository;
+using LunchApp.Persistance.Logic;
 
 namespace LunchApp
 {
@@ -57,6 +59,12 @@ namespace LunchApp
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            //Respository Services
+            services.AddTransient<IRestaurantRepository, RestaurantRepository>();
+
+            //Logic Services
+            services.AddTransient<IRestaurantLogic, RestaurantLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
