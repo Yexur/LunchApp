@@ -10,9 +10,9 @@ namespace LunchApp.Persistance.Repository
 {
     public class RestaurantRepository : IRestaurantRepository
     {
-        private ApplicationDbContext _context;
+        private LunchAppDbContext _context;
 
-        public RestaurantRepository(ApplicationDbContext context)
+        public RestaurantRepository(LunchAppDbContext context)
         {
             _context = context;
         }

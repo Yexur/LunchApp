@@ -5,13 +5,13 @@ using LunchApp.Models.ApplicationModels;
 
 namespace LunchApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class LunchAppDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<RestaurantModel> Restaurant { get; set; }
         public DbSet<LocationModel> Location { get; set; }
         public DbSet<RestaurantTypeModel> RestaurantType { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public LunchAppDbContext(DbContextOptions<LunchAppDbContext> options)
             : base(options)
         {
         }

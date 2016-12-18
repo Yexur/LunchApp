@@ -48,10 +48,10 @@ namespace LunchApp
             services.AddApplicationInsightsTelemetry(Configuration);
 
             var connection = @"Server=localhost\SQLEXPRESS;Database=LUNCH_APP;Integrated Security=True;MultipleActiveResultSets=True;";
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<LunchAppDbContext>(options => options.UseSqlServer(connection));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<LunchAppDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
@@ -59,6 +59,8 @@ namespace LunchApp
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddTransient<LunchAppSeedData>();
 
             //Respository Services
             services.AddTransient<IRestaurantRepository, RestaurantRepository>();
@@ -68,7 +70,7 @@ namespace LunchApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, LunchAppSeedData seeder, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -100,6 +102,8 @@ namespace LunchApp
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            seeder.EnsureSeedData();
         }
     }
 }
