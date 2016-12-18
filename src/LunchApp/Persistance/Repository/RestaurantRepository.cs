@@ -19,7 +19,8 @@ namespace LunchApp.Persistance.Repository
         public async Task<List<RestaurantModel>> All()
         {
             return await _context.Restaurant
-                .Include(f => f.RestaurantType).ToListAsync();
+                .Include(f => f.RestaurantType)
+                .Include(l => l.Locations).ToListAsync();
         }
 
         public void Delete(int id)

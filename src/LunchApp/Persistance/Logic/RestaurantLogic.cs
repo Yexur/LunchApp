@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using LunchApp.Models.ApplicationModels;
 using LunchApp.Persistance.Repository;
+using LunchApp.Models.ApplicationViewModels;
+using System;
 
 namespace LunchApp.Persistance.Logic
 {
@@ -25,20 +27,33 @@ namespace LunchApp.Persistance.Logic
            return _restaurantRepository.FindById(id);
         }
 
-        public async Task<List<RestaurantModel>> GetList()
+        public async Task<List<RestaurantViewModel>> GetList()
         {
             var restaurants = await _restaurantRepository.All();
 
             if (restaurants == null || !restaurants.Any()) 
             {
-                return Enumerable.Empty<RestaurantModel>().ToList();
+                return Enumerable.Empty<RestaurantViewModel>().ToList();
             }
-            return restaurants;
+            return MapRestaurantToViewModel(restaurants);
         }
 
         public async Task Save(RestaurantModel restaurant)
         {
             await _restaurantRepository.Insert(restaurant);
+        }
+
+        private List<RestaurantViewModel> MapRestaurantToViewModel(List<RestaurantModel> restaurants)
+        {
+            var restaurantList = restaurants.Select(x => new RestaurantViewModel()
+            {
+                RestaurantId = x.Id,
+                Name = x.Name,
+                FoodType = x.RestaurantType.FoodType,
+                Locations = x.Locations
+            });
+
+            return restaurantList.ToList();
         }
     }
 }

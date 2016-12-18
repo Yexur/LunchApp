@@ -100,7 +100,7 @@ namespace LunchApp
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Restaurant}/{action=Index}/{id?}");
             });
 
             seeder.EnsureSeedData();
