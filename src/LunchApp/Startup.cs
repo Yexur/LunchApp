@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using LunchApp.Data;
 using LunchApp.Models;
 using LunchApp.Services;
+using LunchApp.Persistance.Repository;
+using LunchApp.Persistance.Logic;
 
 namespace LunchApp
 {
@@ -45,11 +47,11 @@ namespace LunchApp
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            var connection = @"Server=localhost\SQLEXPRESS;Database=LUNCH_APP;Integrated Security=True;MultipleActiveResultSets=True;";
+            services.AddDbContext<LunchAppDbContext>(options => options.UseSqlServer(connection));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<LunchAppDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
@@ -57,10 +59,18 @@ namespace LunchApp
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddTransient<LunchAppSeedData>();
+
+            //Respository Services
+            services.AddTransient<IRestaurantRepository, RestaurantRepository>();
+
+            //Logic Services
+            services.AddTransient<IRestaurantLogic, RestaurantLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, LunchAppSeedData seeder, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -90,8 +100,10 @@ namespace LunchApp
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Restaurant}/{action=Index}/{id?}");
             });
+
+            seeder.EnsureSeedData();
         }
     }
 }
